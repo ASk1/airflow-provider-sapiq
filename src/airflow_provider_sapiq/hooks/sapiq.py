@@ -1,3 +1,4 @@
+"""SAP IQ hook module."""
 from __future__ import annotations
 
 import sqlanydb
@@ -21,13 +22,13 @@ class SapIQHook(DbApiHook):
         return {
             "hidden_fields": ["extra", "schema"],
             "relabeling": {
-                "login": "userid"
+                "login": "User Id"
             },
             "placeholders": {
                 "login": "guest",
                 "password": "guest",
-                "port": "2648",
-                "host": "TDWHAIX",
+                "port": "2638",
+                "host": "host",
             },
         }
 
@@ -37,11 +38,10 @@ class SapIQHook(DbApiHook):
         conn_config = {
             "userid": conn.login,
             "password": conn.password or '',
-            #"database": self.schema or conn.schema,
-            "host": conn.host + ":" + str(conn.port),
+            "host": f'{conn.host}:{conn.port}',
         }
-        self.conn = sqlanydb.connect(**conn_config)
-        return self.conn
+        conn = sqlanydb.connect(**conn_config)
+        return conn
 
     def get_uri(self) -> str:
         """URI invoked in :py:meth:`~airflow.hooks.dbapi.DbApiHook.get_sqlalchemy_engine` method.
